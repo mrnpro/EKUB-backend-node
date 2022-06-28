@@ -5,14 +5,18 @@ const login = async(req, res) => {
     const authheader = req.headers.auth;
 
     if (authheader) {
+
         jwt.verify(authheader, process.env.JWT_SECRET, (error, user) => {
             if (error) {
+
                 return res.status(400).send({ "msg": "authorization failed" })
             }
-            email = user.email;
+
             return res.status(200).send({ "msg": "login success" });
 
         });
+
+
     } else {
 
         var { email, password } = req.body;

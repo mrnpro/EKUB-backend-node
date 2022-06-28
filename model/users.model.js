@@ -8,8 +8,6 @@ const collectionName = "users";
 const adduser = async(fullname, email, password) => {
     try {
         await client.connect()
-
-
         const userAlreadyExists = await db.collection(collectionName).findOne({ email });
         if (userAlreadyExists) {
             console.log("user already axists");
@@ -30,7 +28,9 @@ const adduser = async(fullname, email, password) => {
             await db.collection("Accounts").insertOne({
                 userId,
                 balance: "0",
-                package: "none"
+                package: "none",
+                packageStartedOn: "none",
+                packageExpireOn: "none"
 
             })
         }

@@ -9,7 +9,7 @@ const register = async(req, res) => {
 
     try {
         if (result != "user already exists") {
-            const user = getUser(email)
+            const user = await getUser(email)
             if (user) {
                 const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "30d" });
 

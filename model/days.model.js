@@ -17,7 +17,6 @@ const getDays = async(userId) => {
         client.close();
         return ReceivedDays;
 
-        console.log(ReceivedDays);
 
     } catch (error) {
         return error;

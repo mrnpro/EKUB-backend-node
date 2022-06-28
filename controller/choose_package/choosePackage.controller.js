@@ -14,15 +14,19 @@ const choosePackage = async(req, res) => {
 
         const package = req.params['pkg'];
         const { auth } = req.headers;
-
+        console.log("hey");
         //check if the user is authorized
         if (!auth) {
+            console.log("ther is no auth");
             return res.status(401).send({ "msg": "Unauthorized" })
+
         }
-        const { email, id } = jwt.verify(auth, process.env.JWT_SECRET);
-        const user = await getUser(email);
+        const { username, id } = jwt.verify(auth, process.env.JWT_SECRET);
+        console.log(username);
+        const user = await getUser(username);
 
         if (!user) {
+
             return res.status(401).send({ "msg": "Unauthorized" })
         }
 

@@ -16,13 +16,18 @@ const recharge = async(req, res) => {
         if (!auth) {
             return res.status(401).send({ "msg": "Unauthorized" })
         }
-        const { email, id } = jwt.verify(auth, process.env.JWT_SECRET);
-        const user = await getUser(email);
+        const { username, id } = jwt.verify(auth, process.env.JWT_SECRET);
+        const user = await getUser(username);
 
         if (!user) {
             return res.status(401).send({ "msg": "Unauthorized" })
         }
         const ReceivedDays = await getDays(id);
+
+        if (!ReceivedDays) {
+            return res.status(400).send({ "msg": "days not found please choose package first" })
+
+        }
         if (!ReceivedDays.days) {
             await addPaid(id);
             await create90Days(id);

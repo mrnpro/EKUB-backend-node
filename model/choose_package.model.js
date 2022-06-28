@@ -15,17 +15,17 @@ const choose_package = async(package, id) => {
         await client.connect();
 
 
-        const currentUserPackage = await db.collection(collectionName).findOne({ userId: ObjectId(id) });
+        const currentUserPackage = await getUserAccount(id);
 
         //check if the user has already choosen the package
 
         if (currentUserPackage.package != "none") {
-            return `you already chose ${currentUserPackage.package}`;
+            return `you already chose ${currentUserPackage.package} package`;
         }
 
         await db.collection(collectionName).updateMany({ userId: ObjectId(id) }, {
             $set: {
-                "package": "none",
+                "package": "100",
                 "packageStartedOn": new Date(),
                 "packageExpireOn": expire
             }
@@ -44,7 +44,7 @@ const choose_package = async(package, id) => {
 
 
         client.close();
-        return `congrats you chose ${package}  `
+        return `congrats you chose ${package} package `
 
 
 

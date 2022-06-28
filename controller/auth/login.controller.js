@@ -19,13 +19,13 @@ const login = async(req, res) => {
 
     } else {
 
-        var { email, password } = req.body;
-        const user = await getUser(email);
+        var { username, password } = req.body;
+        const user = await getUser(username);
         if (!user) {
-            res.status(400).send("Invalid email or password");
+            res.status(400).send("Invalid username or password");
         } else if (await bcrypt.compare(password, user.password)) {
             try {
-                const token = jwt.sign({ id: user._id, email: user.email },
+                const token = jwt.sign({ id: user._id, username: user.username },
                     process.env.JWT_SECRET, { expiresIn: "30d" }
                 );
                 res.setHeader('Content-Type', 'application/json');
@@ -38,7 +38,7 @@ const login = async(req, res) => {
             }
 
         } else {
-            return res.status(400).send("Invalid email or password ")
+            return res.status(400).send("Invalid username or password ")
         }
 
 

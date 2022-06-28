@@ -5,6 +5,7 @@
  const { getUserAccount } = require('../../model/Account.model')
 
  const getPenalityAmount = async(req, res) => {
+
      try {
          const { auth } = req.headers;
 
@@ -12,8 +13,8 @@
          if (!auth) {
              return res.status(401).send({ "msg": "Unauthorized" })
          }
-         const { email, id } = jwt.verify(auth, process.env.JWT_SECRET);
-         const user = await getUser(email);
+         const { username, id } = jwt.verify(auth, process.env.JWT_SECRET);
+         const user = await getUser(username);
 
          if (!user) {
              return res.status(401).send({ "msg": "Unauthorized" })
@@ -27,7 +28,7 @@
 
              }
              //console.log(ReceivedDays.days);
-             const resultTotalUnpaidDays = totalUnpaidDays(ReceivedDays.days);
+             const resultTotalUnpaidDays = await totalUnpaidDays(ReceivedDays.days, id);
              const resultPenalities = calculatePenality(ReceivedDays.days);
              return res.status(200).send({
                  "msg": {
@@ -53,8 +54,8 @@
          if (!auth) {
              return res.status(401).send({ "msg": "Unauthorized" })
          }
-         const { email, id } = jwt.verify(auth, process.env.JWT_SECRET);
-         const user = await getUser(email);
+         const { username, id } = jwt.verify(auth, process.env.JWT_SECRET);
+         const user = await getUser(username);
 
          if (!user) {
              return res.status(401).send({ "msg": "Unauthorized" })
@@ -67,6 +68,7 @@
                  return res.status(400).send({ "msg": "days not found please choose package first" })
 
              }
+             console.log(ReceivedDays.days);
              //check if there is penality
              if (checkIfPenality(ReceivedDays.days)) {
                  //console.log(ReceivedDays.days);
@@ -87,9 +89,10 @@
      }
  }
 
- function checkIfPenality(days, ) {
-
-     if (days['penality']) {
+ function checkIfPenality(days) {
+     console.log(days);
+     if (days.includes('penality')) {
+         console.log("yap");
          return true;
      }
 
@@ -97,7 +100,9 @@
      return false;
  }
 
- function totalUnpaidDays(days) {
+ const totalUnpaidDays = async(days, id) => {
+     const account = await getUserAccount(id)
+
      var total = 0;
      for (let index = 0; index < days.length; index++) {
          if (days[index] === 'penality') {
@@ -105,7 +110,8 @@
          }
 
      }
-     return total;
+     console.log(account.package);
+     return total * parseInt(account.package);
  }
 
  function updateAllPenality(days) {

@@ -14,8 +14,8 @@ const getDays = async(req, res) => {
         if (!auth) {
             return res.status(401).send({ "msg": "Unauthorized" })
         }
-        const { email, id } = jwt.verify(auth, process.env.JWT_SECRET);
-        const user = await getUser(email);
+        const { username, id } = jwt.verify(auth, process.env.JWT_SECRET);
+        const user = await getUser(username);
 
         if (!user) {
             return res.status(401).send({ "msg": "Unauthorized" })

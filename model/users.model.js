@@ -5,23 +5,23 @@ const client = new MongoClient(url);
 const dbName = "Ekub";
 const db = client.db(dbName);
 const collectionName = "users";
-const adduser = async(fullname, email, password) => {
+const adduser = async(fullname, username, password) => {
     try {
         await client.connect()
-        const userAlreadyExists = await db.collection(collectionName).findOne({ email });
+        const userAlreadyExists = await db.collection(collectionName).findOne({ username });
         if (userAlreadyExists) {
             console.log("user already axists");
             return "user already exists";
         }
         const user = await db.collection(collectionName).insertOne({
             fullname,
-            email,
+            username,
             password
         });
 
 
         //get user
-        const fetchedUser = await getUser(email);
+        const fetchedUser = await getUser(username);
         if (fetchedUser) {
             await client.connect()
             const userId = fetchedUser._id;
@@ -40,9 +40,9 @@ const adduser = async(fullname, email, password) => {
         console.log(e);
     }
 }
-const getUser = async(email) => {
+const getUser = async(username) => {
     await client.connect();
-    const user = await db.collection(collectionName).findOne({ email })
+    const user = await db.collection(collectionName).findOne({ username })
     client.close();
     return user;
 }

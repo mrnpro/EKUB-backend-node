@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken");
 const { getUser } = require("../../model/users.model")
-const { days } = require("../../model/days.model")
+const { getDays } = require("../../model/days.model")
 
-const getDays = async(req, res) => {
+const Days = async(req, res) => {
 
 
     try {
@@ -26,13 +26,16 @@ const getDays = async(req, res) => {
         //check if the choosen package is the right one
 
 
-        const result = await days(id);
+        const result = await getDays(id);
+        if (!result) {
+            return res.status(200).send({ msg: "error getting days" });
+        }
         console.log(result);
-        return res.status(200).send({ msg: result });
+        return res.status(200).send({ days: result.days });
     } catch (error) {
         return res.status(401).send({ "msg": "authorization failed" })
     }
 
 }
 
-module.exports = { getDays, }
+module.exports = { Days, }

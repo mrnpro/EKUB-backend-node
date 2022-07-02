@@ -25,7 +25,7 @@ const choose_package = async(package, id) => {
 
         await db.collection(collectionName).updateMany({ userId: ObjectId(id) }, {
             $set: {
-                "package": "100",
+                "package": package,
                 "packageStartedOn": new Date(),
                 "packageExpireOn": expire
             }

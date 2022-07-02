@@ -11,4 +11,14 @@ const getUserAccount = async(userId) => {
     client.close();
     return userAccount;
 }
-module.exports = { getUserAccount }
+const updateBalance = async(userId, newBalance) => {
+    await client.connect();
+    await db.collection(collectionName).updateMany({ userId: ObjectId(userId) }, {
+        $set: {
+            "balance": `${newBalance} ETB`
+        }
+    });
+    await client.close();
+
+}
+module.exports = { getUserAccount, updateBalance }

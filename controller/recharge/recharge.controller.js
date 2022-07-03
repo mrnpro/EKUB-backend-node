@@ -1,9 +1,9 @@
 const jwt = require("jsonwebtoken");
 const { getUser } = require("../../model/users.model")
 const { rechargeDily } = require("../../model/recharge.model")
-const { getDays, create90Days, updateDays, addPaid } = require("../../model/days.model")
-const { getUserAccount } = require('../../model/Account.model')
-
+const { getDays, create90Days, updateDays, } = require("../../model/days.model")
+const { getUserAccount, updateBalance } = require('../../model/Account.model')
+const { currentDay } = require('../CurrentDay/currentDay.controller')
 const recharge = async(req, res) => {
 
 
@@ -29,7 +29,7 @@ const recharge = async(req, res) => {
 
         }
         if (!ReceivedDays.days) {
-            await addPaid(id);
+            //   await addPaids;
             await create90Days(id);
 
         }
@@ -40,25 +40,49 @@ const recharge = async(req, res) => {
         }
 
         // const daysDeference = new Date().getTime() - new Date(account.packageStartedOn).getTime();
-        const daysDeference = new Date().getTime() - new Date("2022-06-22T15:29:31.435Z").getTime();
-        const daysLength = new Date(daysDeference).getDate() - 1;
 
+        const daysLength = currentDay("2022-06-22T15:29:31.435Z");
         console.log(daysLength);
 
         var days = ReceivedDays.days;
-        if (checkIfPending(days, daysLength)) {
+        console.log(days);
+        console.log(typeof(daysLength));
+        if (checkIfPending(days, 10)) {
             days[daysLength] = "paid"
 
             const checkedPenalityDays = checkIfPenality(days, daysLength);
             const result = await updateDays(id, checkedPenalityDays);
+
+
+
+
+            //updating the balance after recharged
+            const userAccount = await getUserAccount(id);
+            await updateBalance(id, numberofPaid(days) * parseInt(userAccount.package));
+
             return res.status(200).send({ msg: result + " current plan updated " + ", day " + daysLength });
         }
 
+
+
+
         return res.status(400).send({ msg: "you already recharged the plan" });
     } catch (error) {
+        console.log(error);
         return res.status(401).send({ "msg": "authorization failed" })
     }
 
+
+}
+
+function numberofPaid(days90) {
+    var sumofPaid = 0;
+    for (let index = 0; index <= days90.length; index++) {
+        if (days90[index] == "paid") {
+            sumofPaid++;
+        }
+    }
+    return sumofPaid;
 }
 
 function checkIfPending(days90, index) {

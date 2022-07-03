@@ -8,6 +8,7 @@ const expire = new Date(new Date().getFullYear(), new Date().getMonth(), new Dat
 
 const getDays = async(userId) => {
 
+    var days90 = ["Days Unavilable"];
     try {
         await client.connect();
 
@@ -15,6 +16,11 @@ const getDays = async(userId) => {
         const ReceivedDays = await db.collection(collectionName).findOne({ userId: ObjectId(userId) });
 
         client.close();
+        if (!ReceivedDays) {
+            console.log("days not found");
+        }
+
+
         return ReceivedDays;
 
 
@@ -44,7 +50,7 @@ const create90Days = async(userId) => {
     }
     const res = await db.collection("days").updateMany({ userId: ObjectId(userId) }, {
 
-        $push: { "days": days90 }
+        $push: { "days": days90.days }
     });
 
     await client.close();

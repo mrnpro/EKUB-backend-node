@@ -2,7 +2,7 @@
  const { getUser } = require("../../model/users.model")
  const { rechargeDily } = require("../../model/recharge.model")
  const { getDays, create90Days, updateDays, addPaid } = require("../../model/days.model")
- const { getUserAccount } = require('../../model/Account.model')
+ const { getUserAccount, updateBalance } = require('../../model/Account.model')
 
  const getPenalityAmount = async(req, res) => {
 
@@ -76,6 +76,9 @@
                  //set pay
                  await updateDays(id, updateAllPenality(ReceivedDays.days))
 
+                 //updating balance after paid penality
+                 await updateBalance(id, numberofPaid(days) * await getUserAccount(id).package);
+
                  return res.status(200).send({ "msg": "You have successfully paid all your penalities" })
              }
              return res.status(400).send({ "msg": "WOHOO!! You dont have any penalities " })
@@ -87,6 +90,16 @@
      } catch (error) {
          return res.status(401).send({ "msg": "authorization failed" })
      }
+ }
+
+ function numberofPaid(days90) {
+     var sumofPaid = 0;
+     for (let index = 0; index <= days90; index++) {
+         if (days[index] == "paid") {
+             sumofPaid++;
+         }
+     }
+     return sumofPaid;
  }
 
  function checkIfPenality(days) {

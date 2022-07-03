@@ -33,7 +33,7 @@ const Days = async(req, res) => {
         console.log(result);
         return res.status(200).send({ days: result.days });
     } catch (error) {
-        return res.status(401).send({ "msg": "authorization failed" })
+        return res.status(401).send({ "msg": error })
     }
 
 }

@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
 const { getUser } = require("../../model/users.model")
 const { getUserAccount } = require('../../model/Account.model')
-
+const { currentDay } = require('../CurrentDay/currentDay.controller');
+const { getDays } = require('../../model/days.model')
 const getAccount = async(req, res) => {
 
 
@@ -27,11 +28,17 @@ const getAccount = async(req, res) => {
         if (!result) {
             return res.status(404).send({ "msg": "user account not found" });
         }
-
+        const DaysResult = await getDays(id);
+        const resultFromCurrentDay = currentDay("2022-06-22T15:29:31.435Z");
         console.log(result);
-        return res.status(200).send({ account: result });
+        var days90 = ["Days Unavilable"];
+        if (DaysResult) {
+            days90 = DaysResult
+        }
+        return res.status(200).send({ "result": result, days: { days: DaysResult.days, "currentday": resultFromCurrentDay, }, });
     } catch (error) {
-        // return res.status(401).send({ "msg": "authorization failed" })
+        console.log(error);
+        return res.status(401).send({ "msg": "authorization failed" })
     }
 
 }

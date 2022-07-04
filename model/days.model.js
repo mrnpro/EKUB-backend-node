@@ -8,7 +8,7 @@ const expire = new Date(new Date().getFullYear(), new Date().getMonth(), new Dat
 
 const getDays = async(userId) => {
 
-    var days90 = ["Days Unavilable"];
+    var days = ["Days Unavilable"];
     try {
         await client.connect();
 
@@ -18,7 +18,9 @@ const getDays = async(userId) => {
         client.close();
         if (!ReceivedDays) {
             console.log("days not found");
+
         }
+
 
 
         return ReceivedDays;

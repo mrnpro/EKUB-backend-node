@@ -22,45 +22,52 @@ const recharge = async(req, res) => {
         if (!user) {
             return res.status(401).send({ "msg": "Unauthorized" })
         }
+        //get days 
         const ReceivedDays = await getDays(id);
-
+        //check if the user has days 
         if (!ReceivedDays) {
             return res.status(400).send({ "msg": "days not found please choose package first" })
 
         }
-        if (!ReceivedDays.days) {
-            //   await addPaids;
-            await create90Days(id);
 
-        }
+
+        //checking if the user has accont
         const account = await getUserAccount(id);
-
         if (!account) {
             return res.status(400).send({ msg: "no account with this user" });
         }
 
-        // const daysDeference = new Date().getTime() - new Date(account.packageStartedOn).getTime();
-
-        const daysLength = currentDay("2022-06-22T15:29:31.435Z");
-        console.log(daysLength);
-
+        const daysDeference = new Date().getTime() - new Date(account.packageStartedOn).getTime();
+        // check the current day by substructing the start time package from the current time
+        const currentday = currentDay(daysDeference);
+        console.log(currentday);
         var days = ReceivedDays.days;
-        console.log(days);
-        console.log(typeof(daysLength));
-        if (checkIfPending(days, 10)) {
-            days[daysLength] = "paid"
 
-            const checkedPenalityDays = checkIfPenality(days, daysLength);
+
+
+        //check if the current day status is pending if so ... our target is recharging current day so
+        //change to paid
+        if (checkIfPending(days, 10)) {
+            days[currentday] = "paid"
+
+            //check if there is penality if there is the  the function that locates below will return us updated days that contains
+            //penality days 
+            const checkedPenalityDays = checkIfPenality(days, currentday);
+
+            // we asume that the above method did return us the updated days now , update the users days on the database
+
             const result = await updateDays(id, checkedPenalityDays);
 
 
 
 
             //updating the balance after recharged
+            //getting the user account to update his /her account balance
             const userAccount = await getUserAccount(id);
+            // update balance by multiplying thenumber of paid days with the user account chosen package
             await updateBalance(id, numberofPaid(days) * parseInt(userAccount.package));
-
-            return res.status(200).send({ msg: result + " current plan updated " + ", day " + daysLength });
+            //return the msg to the user 
+            return res.status(200).send({ msg: result + " current plan updated " + ", day " + currentday });
         }
 
 
@@ -92,8 +99,8 @@ function checkIfPending(days90, index) {
     return false;
 }
 
-function checkIfPenality(days, daysLength) {
-    for (let index = 0; index <= daysLength; index++) {
+function checkIfPenality(days, currentday) {
+    for (let index = 0; index < currentday; index++) {
         if (days[index] == "pending") {
             days[index] = "penality";
         }

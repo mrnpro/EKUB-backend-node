@@ -50,8 +50,8 @@ const recharge = async(req, res) => {
         if (checkIfPending(days, 10)) {
             days[currentday] = "paid"
 
-            //check if there is penality if there is the  the function that locates below will return us updated days that contains
-            //penality days 
+            //check if there is penalty if there is the  the function that locates below will return us updated days that contains
+            //penalty days 
             const checkedPenalityDays = checkIfPenality(days, currentday);
 
             // we asume that the above method did return us the updated days now , update the users days on the database
@@ -102,7 +102,7 @@ function checkIfPending(days90, index) {
 function checkIfPenality(days, currentday) {
     for (let index = 0; index < currentday; index++) {
         if (days[index] == "pending") {
-            days[index] = "penality";
+            days[index] = "penalty";
         }
     }
     return days;

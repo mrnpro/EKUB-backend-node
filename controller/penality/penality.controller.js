@@ -33,7 +33,7 @@
              return res.status(200).send({
                  "msg": {
                      "total unpaid plan Bill": resultTotalUnpaidDays + " ETB",
-                     "total penality Bill": resultPenalities + " ETB",
+                     "total penalty Bill": resultPenalities + " ETB",
                      "total": resultPenalities + resultTotalUnpaidDays + " ETB"
                  }
              })
@@ -69,14 +69,14 @@
 
              }
              console.log(ReceivedDays.days);
-             //check if there is penality
+             //check if there is penalty
              if (checkIfPenality(ReceivedDays.days)) {
                  //console.log(ReceivedDays.days);
                  const resultPenalities = calculatePenality(ReceivedDays.days);
                  //set pay
                  await updateDays(id, updateAllPenality(ReceivedDays.days))
 
-                 //updating balance after paid penality
+                 //updating balance after paid penalty
                  await updateBalance(id, numberofPaid(days) * await getUserAccount(id).package);
 
                  return res.status(200).send({ "msg": "You have successfully paid all your penalities" })
@@ -104,7 +104,7 @@
 
  function checkIfPenality(days) {
      console.log(days);
-     if (days.includes('penality')) {
+     if (days.includes('penalty')) {
          console.log("yap");
          return true;
      }
@@ -118,7 +118,7 @@
 
      var total = 0;
      for (let index = 0; index < days.length; index++) {
-         if (days[index] === 'penality') {
+         if (days[index] === 'penalty') {
              total++;
          }
 
@@ -129,7 +129,7 @@
 
  function updateAllPenality(days) {
      for (let index = 0; index < days.length; index++) {
-         if (days[index] === 'penality') {
+         if (days[index] === 'penalty') {
              days[index] = 'paid';
          }
 
@@ -142,7 +142,7 @@
 
      var numberOfPenalities = 0;
      for (let index = 0; index < days.length; index++) {
-         if (days[index] === 'penality') {
+         if (days[index] === 'penalty') {
              numberOfPenalities++;
          }
 

@@ -37,9 +37,9 @@ const recharge = async(req, res) => {
             return res.status(400).send({ msg: "no account with this user" });
         }
 
-        const daysDeference = new Date().getTime() - new Date(account.packageStartedOn).getTime();
+
         // check the current day by substructing the start time package from the current time
-        const currentday = currentDay(daysDeference);
+        const currentday = currentDay(account.packageStartedOn);
         console.log(currentday);
         var days = ReceivedDays.days;
 

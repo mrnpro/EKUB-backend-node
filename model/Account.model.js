@@ -15,7 +15,7 @@ const updateBalance = async(userId, newBalance) => {
     await client.connect();
     await db.collection(collectionName).updateMany({ userId: ObjectId(userId) }, {
         $set: {
-            "balance": `${newBalance} ETB`
+            "balance": `+ ${newBalance} ETB`
         }
     });
     await client.close();

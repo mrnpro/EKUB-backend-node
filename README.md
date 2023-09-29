@@ -54,5 +54,3 @@ For detailed information on request and response formats, please refer to the AP
 ## Contributing
 Contributions to EKUB-backend-node are welcome! If you have any suggestions, bug reports, or feature requests, please create an issue on the repository. If you'd like to contribute code changes, you can submit a pull request with your proposed changes.
 
-## License
-The EKUB-backend-node repository is licensed under the MIT License. You are free to use, modify, and distribute the codebase as per the terms of the license.
